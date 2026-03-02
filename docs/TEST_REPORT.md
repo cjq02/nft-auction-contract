@@ -25,11 +25,11 @@
 forge test -vv
 ```
 
-![forge-test1](./img/forge-test1.png)
+![forge-test1](../img/forge-test1.png)
 
-![forge-test2](./img/forge-test2.png)
+![forge-test2](../img/forge-test2.png)
 
-![forge-test3](./img/forge-test3.png)
+![forge-test3](../img/forge-test3.png)
 
 ---
 
@@ -40,9 +40,9 @@ forge test -vv
 forge coverage
 ```
 
-![forge-coverage](./img/forge-coverage.png)
+![forge-coverage](../img/forge-coverage.png)
 
-![forge-coverage-report](./img/forge-coverage-report.png)
+![forge-coverage-report](../img/forge-coverage-report.png)
 
 ---
 
@@ -53,13 +53,13 @@ forge coverage
 forge test --gas-report
 ```
 
-![gas-report](./img/gas-report.png)
+![gas-report](../img/gas-report.png)
 
-![gas-report1](./img/gas-report1.png)
+![gas-report1](../img/gas-report1.png)
 
-![gas-report2](./img/gas-report2.png)
+![gas-report2](../img/gas-report2.png)
 
-![gas-report3](./img/gas-report3.png)
+![gas-report3](../img/gas-report3.png)
 
 ---
 
@@ -242,13 +242,13 @@ Etherscan: https://sepolia.etherscan.io/tx/0x5d5b9a52787021562e6f7f33aa1fca893b9
 > 请提供以下截图：
 > 1. **终端命令执行结果**：显示 `cast send` 命令的完整输出（包含交易哈希、状态、Gas 使用量等）
 
-  ![cast-send](./img/cast-send-nft-mint.png)
+  ![cast-send](../img/cast-send-nft-mint.png)
 > 2. **Etherscan 交易详情页**：访问 [交易链接](https://sepolia.etherscan.io/tx/0x5d5b9a52787021562e6f7f33aa1fca893b9ceb2131d395020003a9160492a20c) 并截图，显示：
 >    - 交易状态（Success ✅）
 >    - 交易详情（From/To 地址、Gas Used、区块号等）
 >    - 事件日志（Transfer 和 TokenURI 事件）
 
-![etherscan-transaction](./img/etherscan-transaction-nft-mint.jpeg)
+![etherscan-transaction](../img/etherscan-transaction-nft-mint.jpeg)
 ---
 
 #### 测试 4.2.3：查询 NFT 信息
