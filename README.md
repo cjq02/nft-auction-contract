@@ -58,7 +58,7 @@ nft-auction/
 │   │   ├── DeployNFT.s.sol       # 部署 NFTMarketplace 合约
 │   │   └── DeployAuction.s.sol   # 部署 AuctionV1 代理合约
 │   ├── upgrade/
-│   │   └── UpgradeAuction.s.sol  # 升级 Auction 到 V2 脚本
+│   │   └── UpgradeAuctionToV2.s.sol  # 升级 Auction 代理到 V2 实现
 │   └── Interact.s.sol            # 合约交互脚本
 │
 ├── doc/                          # 文档
@@ -395,7 +395,7 @@ cast storage $PROXY_ADDRESS 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920
 
 ```bash
 # 升级到 AuctionV2
-forge script script/upgrade/UpgradeAuction.s.sol \
+forge script script/upgrade/UpgradeAuctionToV2.s.sol:UpgradeAuctionToV2 \
   --rpc-url $SEPOLIA_RPC_URL \
   --broadcast \
   --verify \

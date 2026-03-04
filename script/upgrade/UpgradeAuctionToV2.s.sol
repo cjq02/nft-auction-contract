@@ -7,10 +7,10 @@ import {AuctionV2} from "../../src/auction/AuctionV2.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
- * @title UpgradeAuction
- * @notice 将 Auction 升级到 AuctionV2
+ * @title UpgradeAuctionToV2
+ * @notice 将 Auction 代理升级到 AuctionV2 实现
  */
-contract UpgradeAuction is Script {
+contract UpgradeAuctionToV2 is Script {
     AuctionV2 public implementationV2;
 
     function run() external {

@@ -831,7 +831,7 @@ cjq_ubuntu@LAPTOP-CJQ:~/web3/projects/solidity-task/task3/nft-auction-market$ ca
 **升级命令**（参考，已执行）：
 ```bash
 # 部署 AuctionV2 并升级
-forge script script/upgrade/UpgradeAuction.s.sol \
+forge script script/upgrade/UpgradeAuctionToV2.s.sol:UpgradeAuctionToV2 \
   --rpc-url $SEPOLIA_RPC_URL \
   --broadcast \
   --verify \
