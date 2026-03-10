@@ -13,10 +13,11 @@ import {CNHPriceFeed} from "../../src/oracle/CNHPriceFeed.sol";
  */
 contract DeployCNHPriceFeed is Script {
     function run() external {
+        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         // 1 CNH = 1/6.9 USD ≈ 0.14492754 USD => 14492754 (8 decimals)
         uint256 priceUsd8 = vm.envOr("CNH_PRICE_USD_8", uint256(14492754));
 
-        vm.startBroadcast();
+        vm.startBroadcast(deployerPrivateKey);
 
         CNHPriceFeed feed = new CNHPriceFeed(priceUsd8);
         console.log("CNHPriceFeed deployed at:", address(feed));
