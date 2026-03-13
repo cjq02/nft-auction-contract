@@ -309,6 +309,14 @@ abstract contract Auction is
             IERC20(auction.paymentToken).safeTransfer(feeRecipient, fee);
         }
 
+        if (fee > 0) {
+            emit FeeCollected(
+                auctionId,
+                feeRecipient,
+                fee,
+                winningBid.isETH
+            );
+        }
         emit AuctionEnded(auctionId, winningBid.bidder, winningBid.amount);
     }
 

@@ -111,6 +111,20 @@ interface IAuction {
     event Withdrawn(address indexed user, uint256 amount, bool isETH);
 
     /**
+     * @notice 手续费收取事件
+     * @param auctionId 拍卖 ID
+     * @param recipient 手续费接收地址
+     * @param amount 手续费金额
+     * @param isETH 是否为 ETH（false 表示 ERC20 代币）
+     */
+    event FeeCollected(
+        uint256 indexed auctionId,
+        address indexed recipient,
+        uint256 amount,
+        bool isETH
+    );
+
+    /**
      * @notice 创建新的 NFT 拍卖
      * @dev 调用前需先授权合约操作 NFT
      * @param nftContract NFT 合约地址
