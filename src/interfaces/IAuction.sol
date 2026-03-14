@@ -116,12 +116,14 @@ interface IAuction {
      * @param recipient 手续费接收地址
      * @param amount 手续费金额
      * @param isETH 是否为 ETH（false 表示 ERC20 代币）
+     * @param feeRateBps 实际使用的手续费率（基点，如 250 = 2.5%），便于追溯历史拍卖的计费方式
      */
     event FeeCollected(
         uint256 indexed auctionId,
         address indexed recipient,
         uint256 amount,
-        bool isETH
+        bool isETH,
+        uint256 feeRateBps
     );
 
     /**

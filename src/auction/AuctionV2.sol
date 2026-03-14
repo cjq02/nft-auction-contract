@@ -21,6 +21,12 @@ contract AuctionV2 is Auction {
 
     FeeTier[] public feeTiers;
 
+    // ========== V2 新增：动态手续费变更事件（便于链下追溯历史配置） ==========
+
+    event FeeTierAdded(uint256 indexed index, uint256 minAmount, uint256 feeRate);
+    event FeeTierUpdated(uint256 indexed index, uint256 minAmount, uint256 feeRate);
+    event FeeTierRemoved(uint256 indexed index);
+
     // ========== V2 新增：动态手续费管理 ==========
 
     /**
@@ -28,7 +34,9 @@ contract AuctionV2 is Auction {
      */
     function addFeeTier(uint256 minAmount, uint256 _feeRate) external onlyOwner {
         require(_feeRate <= 1000, "Fee rate too high");
+        uint256 index = feeTiers.length;
         feeTiers.push(FeeTier({minAmount: minAmount, feeRate: _feeRate}));
+        emit FeeTierAdded(index, minAmount, _feeRate);
     }
 
     /**
@@ -38,6 +46,7 @@ contract AuctionV2 is Auction {
         require(index < feeTiers.length, "Invalid index");
         feeTiers[index] = feeTiers[feeTiers.length - 1];
         feeTiers.pop();
+        emit FeeTierRemoved(index);
     }
 
     /**
@@ -47,6 +56,7 @@ contract AuctionV2 is Auction {
         require(index < feeTiers.length, "Invalid index");
         require(_feeRate <= 1000, "Fee rate too high");
         feeTiers[index] = FeeTier({minAmount: minAmount, feeRate: _feeRate});
+        emit FeeTierUpdated(index, minAmount, _feeRate);
     }
 
     /**
@@ -67,13 +77,13 @@ contract AuctionV2 is Auction {
 
     /**
      * @notice 计算手续费（支持动态手续费）
-     * @dev V2 新增：修复了原版本 ERC20 手续费计算为 0 的 bug
+     * @dev V2 新增：修复了原版本 ERC20 手续费计算为 0 的 bug；返回 feeRateBps 便于事件追溯
      */
     function calculateFee(
         uint256 amount,
         bool isETH,
         address paymentToken
-    ) public view override returns (uint256) {
+    ) public view override returns (uint256 fee, uint256 feeRateBps) {
         // 计算 USD 价值
         uint256 usdValue;
         if (isETH) {
@@ -85,14 +95,14 @@ contract AuctionV2 is Auction {
         }
 
         // 查找适用的手续费层级
-        uint256 applicableFeeRate = feeRate;
+        feeRateBps = feeRate;
         for (uint256 i = feeTiers.length; i > 0; i--) {
             if (usdValue >= feeTiers[i - 1].minAmount) {
-                applicableFeeRate = feeTiers[i - 1].feeRate;
+                feeRateBps = feeTiers[i - 1].feeRate;
                 break;
             }
         }
 
-        return (amount * applicableFeeRate) / 10000;
+        fee = (amount * feeRateBps) / 10000;
     }
 }

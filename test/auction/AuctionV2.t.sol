@@ -158,7 +158,7 @@ contract AuctionV2Test is Test {
     function test_CalculateFee_FixedRate() public view {
         // 使用默认手续费率 2.5%
         uint256 amount = 1 ether;
-        uint256 fee = auction.calculateFee(amount, true, address(0));
+        (uint256 fee,) = auction.calculateFee(amount, true, address(0));
 
         // 1 ETH * 250 / 10000 = 0.025 ETH
         assertEq(fee, 0.025 ether);
@@ -167,7 +167,7 @@ contract AuctionV2Test is Test {
     function test_CalculateFee_FixedRate_WithToken() public view {
         // ERC20 代币，$3000 的价值
         uint256 amount = 3000 * 1e18; // 3000 tokens，每个 $1
-        uint256 fee = auction.calculateFee(amount, false, address(token));
+        (uint256 fee,) = auction.calculateFee(amount, false, address(token));
 
         // 3000 * 250 / 10000 = 75 tokens
         assertEq(fee, 75 * 1e18);
@@ -184,15 +184,15 @@ contract AuctionV2Test is Test {
         auction.addFeeTier(5000 * 1e18, 400);
 
         // 小额交易：0.1 ETH ≈ $300，应该用 2.5%
-        uint256 fee1 = auction.calculateFee(0.1 ether, true, address(0));
+        (uint256 fee1,) = auction.calculateFee(0.1 ether, true, address(0));
         assertEq(fee1, (0.1 ether * 250) / 10000);
 
         // 中额交易：1 ETH ≈ $3000，应该用 3%
-        uint256 fee2 = auction.calculateFee(1 ether, true, address(0));
+        (uint256 fee2,) = auction.calculateFee(1 ether, true, address(0));
         assertEq(fee2, (1 ether * 300) / 10000);
 
         // 大额交易：3 ETH ≈ $9000，应该用 4%
-        uint256 fee3 = auction.calculateFee(3 ether, true, address(0));
+        (uint256 fee3,) = auction.calculateFee(3 ether, true, address(0));
         assertEq(fee3, (3 ether * 400) / 10000);
     }
 
@@ -202,15 +202,15 @@ contract AuctionV2Test is Test {
         auction.addFeeTier(5000 * 1e18, 400);
 
         // 小额交易：500 tokens ≈ $500，应该用 2.5%
-        uint256 fee1 = auction.calculateFee(500 * 1e18, false, address(token));
+        (uint256 fee1,) = auction.calculateFee(500 * 1e18, false, address(token));
         assertEq(fee1, (500 * 1e18 * 250) / 10000);
 
         // 中额交易：2000 tokens ≈ $2000，应该用 3%
-        uint256 fee2 = auction.calculateFee(2000 * 1e18, false, address(token));
+        (uint256 fee2,) = auction.calculateFee(2000 * 1e18, false, address(token));
         assertEq(fee2, (2000 * 1e18 * 300) / 10000);
 
         // 大额交易：10000 tokens ≈ $10000，应该用 4%
-        uint256 fee3 = auction.calculateFee(10000 * 1e18, false, address(token));
+        (uint256 fee3,) = auction.calculateFee(10000 * 1e18, false, address(token));
         assertEq(fee3, (10000 * 1e18 * 400) / 10000);
     }
 
@@ -221,7 +221,7 @@ contract AuctionV2Test is Test {
         // 使用一个能被整除的金额来测试边界
         // $3000 = 1 ETH（当 ETH 价格为 $3000 时）
         uint256 amountAtBoundary = 1 ether;
-        uint256 fee = auction.calculateFee(amountAtBoundary, true, address(0));
+        (uint256 fee,) = auction.calculateFee(amountAtBoundary, true, address(0));
         // 应该使用 3% 费率（因为 >= $1000）
         assertEq(fee, (amountAtBoundary * 300) / 10000);
     }
@@ -230,7 +230,7 @@ contract AuctionV2Test is Test {
         MockERC20 unknownToken = new MockERC20("Unknown", "UNK", 18);
 
         vm.expectRevert("Price feed not set");
-        auction.calculateFee(100 * 1e18, false, address(unknownToken));
+        (uint256 _fee, uint256 _rate) = auction.calculateFee(100 * 1e18, false, address(unknownToken));
     }
 
     // ========== 测试：拍卖流程使用动态手续费 ==========
@@ -411,7 +411,7 @@ contract AuctionV2Test is Test {
 
         // $3000 刚好触发第二层级（1 ETH）
         uint256 amountAtBoundary = 1 ether;
-        uint256 fee = auction.calculateFee(amountAtBoundary, true, address(0));
+        (uint256 fee,) = auction.calculateFee(amountAtBoundary, true, address(0));
         assertEq(fee, (amountAtBoundary * 300) / 10000);
     }
 
@@ -421,7 +421,7 @@ contract AuctionV2Test is Test {
         // $900 应该使用第一层级（2.5%）
         // 0.3 ETH = $900（当 ETH 为 $3000）
         uint256 amountJustBelow = 0.3 ether;
-        uint256 fee = auction.calculateFee(amountJustBelow, true, address(0));
+        (uint256 fee,) = auction.calculateFee(amountJustBelow, true, address(0));
         assertEq(fee, (amountJustBelow * 250) / 10000);
     }
 
@@ -430,7 +430,7 @@ contract AuctionV2Test is Test {
         auction.addFeeTier(100000 * 1e18, 600); // $100k+ : 6%
 
         uint256 largeAmount = 100 ether; // ≈ $300k
-        uint256 fee = auction.calculateFee(largeAmount, true, address(0));
+        (uint256 fee,) = auction.calculateFee(largeAmount, true, address(0));
         assertEq(fee, (largeAmount * 600) / 10000);
     }
 

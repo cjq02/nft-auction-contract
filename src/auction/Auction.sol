@@ -287,7 +287,7 @@ abstract contract Auction is
         );
 
         // 使用 virtual 函数计算手续费，子合约可以重写
-        uint256 fee = calculateFee(
+        (uint256 fee, uint256 feeRateBps) = calculateFee(
             winningBid.amount,
             winningBid.isETH,
             auction.paymentToken
@@ -314,7 +314,8 @@ abstract contract Auction is
                 auctionId,
                 feeRecipient,
                 fee,
-                winningBid.isETH
+                winningBid.isETH,
+                feeRateBps
             );
         }
         emit AuctionEnded(auctionId, winningBid.bidder, winningBid.amount);
@@ -418,14 +419,17 @@ abstract contract Auction is
 
     /**
      * @notice 计算手续费（子合约可以重写此函数实现自定义逻辑）
+     * @return fee 手续费金额
+     * @return feeRateBps 实际使用的费率（基点），便于 FeeCollected 事件追溯
      */
     function calculateFee(
         uint256 amount,
         bool isETH,
         address paymentToken
-    ) public view virtual returns (uint256) {
+    ) public view virtual returns (uint256 fee, uint256 feeRateBps) {
         // V1 版本：简单的固定手续费率
-        return (amount * feeRate) / 10000;
+        feeRateBps = feeRate;
+        fee = (amount * feeRate) / 10000;
     }
 
     // ========== 提现函数 ==========
